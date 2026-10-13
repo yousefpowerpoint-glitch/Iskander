@@ -135,7 +135,7 @@
       (area ? '<span class="tag">' + esc(area.name) + "</span>" : "") +
       (p.lang ? '<span class="tag plain">In ' + esc(p.lang) + "</span>" : "") +
       (LANG !== "orig" && T[1] !== LANG ? '<span class="tag plain">' + (LANG === "en" ? "Arabic title only" : "English title only") + "</span>" : "") +
-      (full(p) ?'<span class="tag plain">Full abstract</span>' : "") +
+      (full(p) ? '<span class="tag plain">Full abstract</span>' : "") +
       "</div></li>";
   }
 
