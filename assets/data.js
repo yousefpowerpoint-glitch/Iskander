@@ -1,7 +1,9 @@
 /*
   Publication records for Dr. Iskander Hasson A. Sattar.
 
-  Titles, author names and abstract excerpts are copied as they appear on the
+  Full abstracts live in abstracts.js, copied verbatim from each journal's
+  article page (its "src" field). Titles, author names and abstract excerpts here
+  are copied as they appear on the
   sources listed in each record's `sources` — nothing is reworded.
 
   To add a paper, copy one block and fill in what you know. Leave a field as ""
@@ -421,16 +423,5 @@ var PAPERS = [
     notOnRG: true,
     sources: [{ label: "EJUA-HS — article 161", url: "https://ejua.net/index.php/EJUA-HS/article/view/161" },
       { label: "ResearchGate — publication 361667136", url: "https://www.researchgate.net/publication/361667136_athr_almraqbt_w_altqyym_ly_ntayj_tnfydh_almshary" }]
-  },
-
-  /* ---------------- undated ---------------- */
-  {
-    id: "emarketing-ust",
-    title: "The impact of Electronic Marketing on Enhancing competitive Advantage (Field study at University of Science and Technology-Main Campus,Aden)",
-    authors: ["Iskander A. Sattar"], etal: true,
-    rgDate: "", year: null, month: 0,
-    venue: JSD, type: "Article", area: "marketing",
-    notOnRG: true,
-    sources: [{ label: "JSD — article 453", url: "https://jsd.sdasmart.org/index.php/jsd/en/article/view/453" }]
   }
 ];

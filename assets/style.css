@@ -257,3 +257,9 @@ h1, h2, h3 { font-family: var(--serif); font-weight: 600; line-height: 1.2; marg
 .src-list a.t:hover { color: var(--accent); }
 .src-list ul { margin: 0; padding-left: 18px; font-size: 14.5px; }
 .src-list ul li { overflow-wrap: anywhere; }
+.abstract.full { border-left-width: 3px; padding-top: 2px; padding-bottom: 2px; margin-bottom: 26px; }
+.abstract.full p { margin: 0 0 12px; }
+.abstract.full p:last-child { margin-bottom: 0; }
+.abstract.full.ar { font-size: 19px; line-height: 1.9; }
+.kw { font-size: 15px; color: var(--ink-2); margin: -6px 0 8px; }
+.kw b { color: var(--ink); font-weight: 600; }

@@ -24,10 +24,10 @@
 
   function venueLine(p) {
     if (!p.venue) return "";
-    var s = esc(p.venue);
-    if (p.volume) s += ", " + esc(p.volume) + (p.issue ? "(" + esc(p.issue) + ")" : "");
-    else if (p.issue) s += ", no. " + esc(p.issue);
-    if (p.pages) s += ", " + esc(p.pages);
+    var m = meta(p), s = esc(p.venue);
+    if (m.volume) s += ", " + esc(m.volume) + (m.issue ? "(" + esc(m.issue) + ")" : "");
+    else if (m.issue) s += ", no. " + esc(m.issue);
+    if (m.pages) s += ", " + esc(m.pages);
     return s;
   }
 
@@ -35,6 +35,44 @@
     return PAPERS.slice().sort(function (a, b) {
       return ((b.year || 0) * 100 + (b.month || 0)) - ((a.year || 0) * 100 + (a.month || 0));
     });
+  }
+
+  // Full abstract record from the journal's own page, if we have one.
+  function full(p) {
+    if (typeof ABSTRACTS === "undefined") return null;
+    var k = (typeof ABSTRACT_ALIAS !== "undefined" && ABSTRACT_ALIAS[p.id]) || p.id;
+    return ABSTRACTS[k] || null;
+  }
+
+  function hostLabel(u) {
+    var h = (u.match(/^https?:\/\/([^/]+)/) || [])[1] || "";
+    if (/journals\.ust\.edu/.test(h)) return "Journal of Social Studies (JSS)";
+    if (/jsd\.sdasmart/.test(h)) return "Journal of Scientific Development for Studies and Research (JSD)";
+    if (/ukrpublisher/.test(h)) return "UKR Publisher";
+    if (/ejua\.net/.test(h)) return "Electronic Journal of University of Aden (EJUA-HS)";
+    if (/aijssh/.test(h)) return "AIJSSH";
+    return h;
+  }
+
+  // Sources for a paper: its own list plus the journal page and PDF the abstract came from.
+  function sourcesOf(p) {
+    var list = p.sources.slice(), f = full(p);
+    var have = function (u) { return list.some(function (s) { return s.url === u; }); };
+    if (f) {
+      if (f.src && !have(f.src)) list.push({ label: hostLabel(f.src) + " \u2014 article page (abstract source)", url: f.src });
+      if (f.pdf && !have(f.pdf)) list.push({ label: hostLabel(f.pdf) + " \u2014 full text (PDF)", url: f.pdf });
+      if (f.doi && !p.doi) list.push({ label: "DOI " + f.doi, url: "https://doi.org/" + f.doi });
+    }
+    return list;
+  }
+
+  // Publication details, filled in from the journal page where our record is blank.
+  function meta(p) {
+    var f = full(p) || {};
+    var pg = p.pages || (f.pg && f.pg.indexOf("_") === -1 ? f.pg : "");
+    return {
+      volume: p.volume || f.vol || "", issue: p.issue || f.iss || "", pages: pg, doi: p.doi || f.doi || ""
+    };
   }
 
   function pubItem(p, showYear) {
@@ -47,6 +85,7 @@
       (p.venue ? '<p class="where">' + venueLine(p) + "</p>" : "") +
       (area ? '<span class="tag">' + esc(area.name) + "</span>" : "") +
       (p.lang ? '<span class="tag plain">In ' + esc(p.lang) + "</span>" : "") +
+      (full(p) ? '<span class="tag plain">Full abstract</span>' : "") +
       "</div></li>";
   }
 
@@ -153,7 +192,9 @@
       if (state.area !== "all" && p.area !== state.area) return false;
       if (state.year !== "all" && String(p.year || "undated") !== state.year) return false;
       if (state.q) {
-        var hay = [p.title, p.titleAr, p.titleEn, p.venue, p.abstract, p.authors.join(" ")].join(" ").toLowerCase();
+        var f = full(p);
+        var hay = [p.title, p.titleAr, p.titleEn, p.venue, p.abstract, p.authors.join(" "),
+          f ? f.ab.map(function (a) { return a[1]; }).join(" ") : "", f && f.kw ? f.kw.join(" ") : ""].join(" ").toLowerCase();
         return state.q.split(/\s+/).every(function (w) { return hay.indexOf(w) !== -1; });
       }
       return true;
@@ -197,11 +238,13 @@
     s += " (" + (p.year || "n.d.") + "). " + esc(p.title) + ".";
     if (p.venue) {
       s += " <i>" + esc(p.venue) + "</i>";
-      if (p.volume) s += ", <i>" + esc(p.volume) + "</i>" + (p.issue ? "(" + esc(p.issue) + ")" : "");
-      if (p.pages) s += ", " + esc(p.pages);
+      var m = meta(p);
+      if (m.volume) s += ", <i>" + esc(m.volume) + "</i>" + (m.issue ? "(" + esc(m.issue) + ")" : "");
+      if (m.pages) s += ", " + esc(m.pages);
       s += ".";
     }
-    if (p.doi) s += " https://doi.org/" + esc(p.doi);
+    var d = meta(p).doi;
+    if (d) s += " https://doi.org/" + esc(d);
     return s;
   }
 
@@ -216,24 +259,25 @@
       root.innerHTML = '<p class="empty">This paper could not be found. <a href="research.html">Back to all research</a>.</p>';
       return;
     }
-    var p = list[i], area = AREAS[p.area];
+    var p = list[i], area = AREAS[p.area], M = meta(p), F = full(p), SRC = sourcesOf(p);
     document.title = p.title + " — " + PROFILE.shortName;
 
     var facts = [
       ["Published in", p.venue],
-      ["Volume / issue", p.volume ? p.volume + (p.issue ? " (" + p.issue + ")" : "") : (p.issue ? p.issue : "")],
-      ["Pages", p.pages],
+      ["Volume / issue", M.volume ? M.volume + (M.issue ? " (" + M.issue + ")" : "") : (M.issue ? M.issue : "")],
+      ["Pages", M.pages],
       ["Date", p.date || (p.rgDate ? "" : p.year)],
       ["Date on ResearchGate", p.rgDate],
       ["Field", area && area.name],
       ["Type", p.type],
       ["Language", p.lang || "English"],
-      ["DOI", p.doi ? '<a href="https://doi.org/' + esc(p.doi) + '">' + esc(p.doi) + "</a>" : ""]
+      ["DOI", M.doi ? '<a href="https://doi.org/' + esc(M.doi) + '">' + esc(M.doi) + "</a>" : ""]
     ].filter(function (f) { return f[1]; });
 
     var related = list.filter(function (q) { return q.area === p.area && q.id !== p.id; }).slice(0, 4);
     var prev = list[i - 1], next = list[i + 1];
-    var main = p.sources.filter(function (s) { return s.url !== RG && s.url.indexOf("researchgate") === -1; })[0] || p.sources[0];
+    var main = (F && F.pdf) ? { url: F.pdf, pdf: true } :
+      (SRC.filter(function (s) { return s.url !== RG && s.url.indexOf("researchgate") === -1; })[0] || SRC[0]);
 
     root.innerHTML =
       '<p class="crumbs"><a href="research.html">Research</a> / ' +
@@ -244,17 +288,25 @@
       (p.titleAr ? '<p class="ar ar-title" dir="rtl" lang="ar">' + esc(p.titleAr) + "</p>" : "") +
       (p.titleEn ? '<p class="en-title">' + esc(p.titleEn) + "</p>" : "") +
       '<p class="authors">' + authorLine(p) + "</p>" +
-      (p.abstract ? "<h2>Abstract</h2>" +
+      (F ? F.ab.map(function (a) {
+          var ar = a[0] === "ar";
+          return "<h2" + (ar ? ' class="ar" dir="rtl" lang="ar" style="text-align:right;letter-spacing:0"' : "") + ">" + (ar ? "\u0627\u0644\u0645\u0644\u062e\u0635" : "Abstract") + "</h2>" +
+            '<div class="abstract full' + (ar ? ' ar" dir="rtl" lang="ar' : "") + '">' +
+            esc(a[1]).split(/\n+/).map(function (para) { return "<p>" + para + "</p>"; }).join("") + "</div>";
+        }).join("") +
+        (F.kw && F.kw.length ? '<p class="kw"><b>Keywords:</b> ' + F.kw.map(esc).join(" \u00b7 ") + "</p>" : "") +
+        '<p class="src-note">Abstract and keywords reproduced exactly as published on the journal\'s article page: <a href="' + esc(F.src) + '" target="_blank" rel="noopener">' + esc(hostLabel(F.src)) + "</a>.</p>"
+      : p.abstract ? "<h2>Abstract</h2>" +
         '<blockquote class="abstract' + (p.abstractAr ? ' ar" dir="rtl" lang="ar' : "") + '">' + esc(p.abstract) + "</blockquote>" +
         '<p class="src-note">Abstract excerpt quoted as it appears on ResearchGate.</p>' : "") +
       "<h2>Cite this paper</h2>" +
       '<div class="cite" id="cite">' + apa(p) + "</div>" +
       '<div class="actions" style="margin-top:14px">' +
       '<button class="btn" type="button" id="copy">Copy citation</button>' +
-      (main ? '<a class="btn solid" href="' + esc(main.url) + '" target="_blank" rel="noopener">' + (main.url === RG ? "View on ResearchGate" : "Read at the publisher") + ' <span class="arr">&rarr;</span></a>' : "") +
+      (main ? '<a class="btn solid" href="' + esc(main.url) + '" target="_blank" rel="noopener">' + (main.pdf ? "Read the full paper (PDF)" : main.url === RG ? "View on ResearchGate" : "Read at the publisher") + ' <span class="arr">&rarr;</span></a>' : "") +
       "</div>" +
       "<h2 style=\"margin-top:40px\">Sources</h2>" +
-      '<ol class="sources">' + p.sources.map(function (s) {
+      '<ol class="sources">' + SRC.map(function (s) {
         return '<li><a href="' + esc(s.url) + '" target="_blank" rel="noopener">' + esc(s.label) + "</a></li>";
       }).join("") + "</ol>" +
       (p.rgNote ? '<p class="src-note">' + esc(p.rgNote) + "</p>" : "") +
@@ -296,7 +348,7 @@
     $("#n-rg").textContent = PROFILE.rgCount;
     $("#src-list").innerHTML = list.map(function (p) {
       return '<li><a class="t' + (p.ar ? ' ar" dir="rtl" lang="ar' : "") + '" href="paper.html?id=' + encodeURIComponent(p.id) + '">' + esc(p.title) + "</a>" +
-        "<ul>" + p.sources.map(function (s) {
+        "<ul>" + sourcesOf(p).map(function (s) {
           return '<li><a href="' + esc(s.url) + '" target="_blank" rel="noopener">' + esc(s.label) + "</a></li>";
         }).join("") + "</ul></li>";
     }).join("");
