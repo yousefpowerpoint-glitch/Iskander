@@ -75,17 +75,67 @@
     };
   }
 
+  /* ---------- language of titles and abstracts ---------- */
+
+  // "orig" shows every paper as published. "en" / "ar" switch titles and abstracts
+  // to that language only where the journal itself published a version in it;
+  // nothing is translated here.
+  var LANG = "orig";
+  try { LANG = localStorage.getItem("lang") || "orig"; } catch (e) {}
+  if (["orig", "en", "ar"].indexOf(LANG) === -1) LANG = "orig";
+
+  function origLang(p) { return p.ar ? "ar" : "en"; }
+
+  // A paper's title in one language, or "" if none was published in it.
+  function titleIn(p, l) {
+    if (l === origLang(p)) return p.title;
+    var t = l === "ar" ? p.titleAr : p.titleEn, f = full(p);
+    if (!t && f && typeof TITLES !== "undefined" && TITLES[f.src]) t = TITLES[f.src][l];
+    return t ? t.trim() : "";
+  }
+
+  // [text, language] to show for the current setting.
+  function titleFor(p) {
+    var l = LANG === "orig" ? origLang(p) : LANG, t = titleIn(p, l);
+    return t ? [t, l] : [p.title, origLang(p)];
+  }
+
+  function arClass(l) { return l === "ar" ? ' class="ar" dir="rtl" lang="ar"' : ""; }
+
+  function langSwitch() {
+    var page = document.body.getAttribute("data-page");
+    var wrap = $(".mast .wrap");
+    if (!wrap || ["home", "research", "paper", "sources"].indexOf(page) === -1) return;
+    var opts = [["orig", "Original", "Titles and abstracts as published"], ["en", "EN", "English"], ["ar", "عربي", "العربية"]];
+    var box = document.createElement("div");
+    box.className = "lang";
+    box.setAttribute("role", "group");
+    box.setAttribute("aria-label", "Language of titles and abstracts");
+    box.innerHTML = opts.map(function (o) {
+      return '<button type="button" data-l="' + o[0] + '" title="' + o[2] + '"' + (o[0] === "ar" ? ' lang="ar"' : "") +
+        ' aria-pressed="' + (LANG === o[0]) + '">' + o[1] + "</button>";
+    }).join("");
+    box.addEventListener("click", function (e) {
+      var b = e.target.closest("button");
+      if (!b || b.getAttribute("data-l") === LANG) return;
+      try { localStorage.setItem("lang", b.getAttribute("data-l")); } catch (err) {}
+      location.reload();
+    });
+    wrap.insertBefore(box, $(".nav-toggle"));
+  }
+
   function pubItem(p, showYear) {
-    var area = AREAS[p.area];
+    var area = AREAS[p.area], T = titleFor(p);
     return '<li class="pub">' +
       '<div class="yr">' + (showYear ? (p.year || "—") : "") + "</div>" +
       "<div>" +
-      "<h3" + (p.ar ? ' class="ar" dir="rtl" lang="ar"' : "") + '><a href="paper.html?id=' + encodeURIComponent(p.id) + '">' + esc(p.title) + "</a></h3>" +
+      "<h3" + arClass(T[1]) + '><a href="paper.html?id=' + encodeURIComponent(p.id) + '">' + esc(T[0]) + "</a></h3>" +
       '<p class="by">' + authorLine(p) + "</p>" +
       (p.venue ? '<p class="where">' + venueLine(p) + "</p>" : "") +
       (area ? '<span class="tag">' + esc(area.name) + "</span>" : "") +
       (p.lang ? '<span class="tag plain">In ' + esc(p.lang) + "</span>" : "") +
-      (full(p) ? '<span class="tag plain">Full abstract</span>' : "") +
+      (LANG !== "orig" && T[1] !== LANG ? '<span class="tag plain">' + (LANG === "en" ? "Arabic title only" : "English title only") + "</span>" : "") +
+      (full(p) ?'<span class="tag plain">Full abstract</span>' : "") +
       "</div></li>";
   }
 
@@ -193,7 +243,7 @@
       if (state.year !== "all" && String(p.year || "undated") !== state.year) return false;
       if (state.q) {
         var f = full(p);
-        var hay = [p.title, p.titleAr, p.titleEn, p.venue, p.abstract, p.authors.join(" "),
+        var hay = [p.title, titleIn(p, "ar"), titleIn(p, "en"), p.venue, p.abstract, p.authors.join(" "),
           f ? f.ab.map(function (a) { return a[1]; }).join(" ") : "", f && f.kw ? f.kw.join(" ") : ""].join(" ").toLowerCase();
         return state.q.split(/\s+/).every(function (w) { return hay.indexOf(w) !== -1; });
       }
@@ -260,7 +310,17 @@
       return;
     }
     var p = list[i], area = AREAS[p.area], M = meta(p), F = full(p), SRC = sourcesOf(p);
-    document.title = p.title + " — " + PROFILE.shortName;
+    var T = titleFor(p), other = LANG === "orig" ? titleIn(p, origLang(p) === "ar" ? "en" : "ar") : "";
+    var AB = F ? F.ab : [], abNote = "";
+    if (F && LANG !== "orig") {
+      AB = F.ab.filter(function (a) { return a[0] === LANG; });
+      if (!AB.length) {
+        AB = F.ab;
+        abNote = LANG === "en" ? "No English abstract was published for this paper; it is shown in the original language." :
+          "لم يُنشر ملخص عربي لهذا البحث، لذلك يظهر بلغته الأصلية.";
+      }
+    }
+    document.title = T[0] + " — " + PROFILE.shortName;
 
     var facts = [
       ["Published in", p.venue],
@@ -284,11 +344,11 @@
       '<a href="research.html#area=' + p.area + '">' + esc(area ? area.name : "") + "</a></p>" +
       '<div class="paper"><article>' +
       '<p class="eyebrow">' + esc(p.type) + (p.year ? " &middot; " + p.year : "") + "</p>" +
-      "<h1" + (p.ar ? ' class="ar" dir="rtl" lang="ar"' : "") + ">" + esc(p.title) + "</h1>" +
-      (p.titleAr ? '<p class="ar ar-title" dir="rtl" lang="ar">' + esc(p.titleAr) + "</p>" : "") +
-      (p.titleEn ? '<p class="en-title">' + esc(p.titleEn) + "</p>" : "") +
+      "<h1" + arClass(T[1]) + ">" + esc(T[0]) + "</h1>" +
+      (other ? (T[1] === "en" ? '<p class="ar ar-title" dir="rtl" lang="ar">' : '<p class="en-title">') + esc(other) + "</p>" : "") +
       '<p class="authors">' + authorLine(p) + "</p>" +
-      (F ? F.ab.map(function (a) {
+      (abNote ? '<p class="src-note"' + arClass(LANG) + ">" + abNote + "</p>" : "") +
+      (F ? AB.map(function (a) {
           var ar = a[0] === "ar";
           return "<h2" + (ar ? ' class="ar" dir="rtl" lang="ar" style="text-align:right;letter-spacing:0"' : "") + ">" + (ar ? "الملخص" : "Abstract") + "</h2>" +
             '<div class="abstract full' + (ar ? ' ar" dir="rtl" lang="ar' : "") + '">' +
@@ -315,8 +375,8 @@
       (related.length ? '<h2 style="margin-top:48px">More in ' + esc(area.name) + '</h2><ul class="pubs">' +
         related.map(function (q) { return pubItem(q, true); }).join("") + "</ul>" : "") +
       '<nav class="pager">' +
-      (prev ? '<a href="paper.html?id=' + encodeURIComponent(prev.id) + '"><small>&larr; Newer</small>' + esc(prev.title) + "</a>" : "<span></span>") +
-      (next ? '<a class="next" href="paper.html?id=' + encodeURIComponent(next.id) + '"><small>Older &rarr;</small>' + esc(next.title) + "</a>" : "") +
+      (prev ? '<a href="paper.html?id=' + encodeURIComponent(prev.id) + '"><small>&larr; Newer</small>' + esc(titleFor(prev)[0]) + "</a>" : "<span></span>") +
+      (next ? '<a class="next" href="paper.html?id=' + encodeURIComponent(next.id) + '"><small>Older &rarr;</small>' + esc(titleFor(next)[0]) + "</a>" : "") +
       "</nav></article>" +
       '<aside><dl class="facts">' + facts.map(function (f) {
         return "<div><dt>" + f[0] + "</dt><dd>" + (f[0] === "DOI" ? f[1] : esc(f[1])) + "</dd></div>";
@@ -347,7 +407,8 @@
     var list = sorted();
     $("#n-rg").textContent = PROFILE.rgCount;
     $("#src-list").innerHTML = list.map(function (p) {
-      return '<li><a class="t' + (p.ar ? ' ar" dir="rtl" lang="ar' : "") + '" href="paper.html?id=' + encodeURIComponent(p.id) + '">' + esc(p.title) + "</a>" +
+      var T = titleFor(p);
+      return '<li><a class="t' + (T[1] === "ar" ? ' ar" dir="rtl" lang="ar' : "") + '" href="paper.html?id=' + encodeURIComponent(p.id) + '">' + esc(T[0]) + "</a>" +
         "<ul>" + sourcesOf(p).map(function (s) {
           return '<li><a href="' + esc(s.url) + '" target="_blank" rel="noopener">' + esc(s.label) + "</a></li>";
         }).join("") + "</ul></li>";
@@ -370,7 +431,7 @@
   }
 
   document.addEventListener("DOMContentLoaded", function () {
-    nav(); birthday(); year();
+    nav(); langSwitch(); birthday(); year();
     var page = document.body.getAttribute("data-page");
     if (page === "home") home();
     if (page === "research") research();

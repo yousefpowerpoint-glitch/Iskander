@@ -1,0 +1,31 @@
+/* Language switch and the "add to home screen" prompt. */
+/* language switch in the header */
+.lang { display: flex; margin-left: auto; border: 1px solid var(--rule); border-radius: 4px; overflow: hidden; flex: none; }
+.lang button {
+  font: 500 13px/1 var(--sans); color: var(--ink-2); background: transparent; border: 0;
+  padding: 8px 10px; cursor: pointer;
+}
+.lang button + button { border-left: 1px solid var(--rule); }
+.lang button[lang="ar"] { font-size: 14px; }
+.lang button[aria-pressed="true"] { background: var(--ink); color: var(--paper); }
+@media (max-width: 760px) {
+  .mast .wrap { gap: 10px; }
+  .lang button { padding: 7px 8px; font-size: 12.5px; }
+}
+@media (max-width: 520px) {
+  body:has(.lang) .brand > span:last-child { display: none; }
+}
+
+/* "add to home screen" prompt */
+.install {
+  position: fixed; left: 16px; right: 16px; bottom: 16px; z-index: 50; max-width: 460px; margin: 0 auto;
+  display: flex; align-items: center; gap: 12px; padding: 12px 14px;
+  background: var(--navy); color: #f5f1e8; border-radius: 6px; box-shadow: 0 8px 28px rgba(29,39,51,.28);
+  font: 14.5px/1.45 var(--sans);
+}
+.install img { width: 40px; height: 40px; border-radius: 9px; flex: none; }
+.install p { margin: 0; flex: 1; }
+.install p b { color: #fff; font-weight: 600; }
+.install p small { display: block; color: #c9d1da; font-size: 13px; }
+.install .go { background: #f5f1e8; color: var(--navy); border: 0; border-radius: 4px; padding: 8px 12px; font: 600 14px var(--sans); cursor: pointer; flex: none; }
+.install .x { background: none; border: 0; color: #c9d1da; font-size: 22px; line-height: 1; padding: 4px; cursor: pointer; flex: none; }

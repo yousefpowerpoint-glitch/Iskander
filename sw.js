@@ -1,6 +1,6 @@
 // Keeps a copy of the whole site on the device so it opens without internet.
 // Bump VERSION whenever any site file changes.
-var VERSION = "v1";
+var VERSION = "v2";
 var CACHE = "iskander-" + VERSION;
 var FILES = [
   "./",
@@ -12,8 +12,10 @@ var FILES = [
   "card.html",
   "manifest.webmanifest",
   "assets/style.css",
+  "assets/ui.css",
   "assets/data.js",
   "assets/abstracts.js",
+  "assets/titles.js",
   "assets/app.js",
   "assets/offline.js",
   "assets/qr.svg",
