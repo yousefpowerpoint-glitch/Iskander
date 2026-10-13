@@ -55,6 +55,9 @@
     .sheet { padding: 0; gap: 10mm; justify-content: flex-start; }
     .side > p { display: none; }
     .zoom { zoom: 1; }
+    .sheet { display: block; }
+    .side:first-child { break-after: page; page-break-after: always; }
+    .side { break-inside: avoid; padding-top: 1mm; }
     .credit { text-align: left; font-size: 8pt; margin-top: 6mm; }
     .card { box-shadow: none; border-radius: 0; outline: .1mm dashed #bbb; }
   }

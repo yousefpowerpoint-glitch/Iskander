@@ -11,7 +11,8 @@ Dr. Iskander Hasson A. Sattar, Associate Professor of Business Administration, U
 | `profile.html` | Profile (from his ResearchGate page), education, co-authors |
 | `sources.html` | Every source used, per paper |
 | `card.html` | Printable business card (85.6 × 54 mm) with the QR code |
-| `print/card.pdf` | The card, ready for a print shop |
+| `print/card.pdf` | The card for a print shop: 2 pages at exact card size (85.6 × 54 mm) — page 1 front, page 2 back |
+| `print/card-a4.pdf` | For printing at home: A4, one side per page |
 
 ## Adding a paper
 Open `assets/data.js`, copy one block in `PAPERS`, and fill it in. The counts, filters and pages update themselves.
