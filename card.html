@@ -41,9 +41,8 @@
   .back .url { font-size: 1.85mm; color: #9fb0c0; margin-top: 3.4mm; word-break: break-all; }
   .back .qr { background: #fff; border-radius: 1.6mm; padding: 2mm; }
   .back .qr img { display: block; width: 100%; height: auto; }
+  .back .studio { margin: 1.8mm 0 0; text-align: center; font-size: 1.55mm; font-weight: 300; letter-spacing: .12mm; color: #8fa1b3; white-space: nowrap; }
 
-  .credit { text-align: center; font-size: 12.5px; letter-spacing: .3px; color: var(--ink-3); margin: 6px 0 0; }
-  .credit .ar { font-size: 13.5px; text-align: center; }
   .howto { max-width: 680px; margin: 30px auto 70px; }
   .howto h2 { font-size: 24px; margin-bottom: 10px; }
   .howto ol { padding-left: 20px; color: var(--ink-2); }
@@ -58,7 +57,6 @@
     .sheet { display: block; }
     .side:first-child { break-after: page; page-break-after: always; }
     .side { break-inside: avoid; padding-top: 1mm; }
-    .credit { text-align: left; font-size: 8pt; margin-top: 6mm; }
     .card { box-shadow: none; border-radius: 0; outline: .1mm dashed #bbb; }
   }
 </style>
@@ -112,16 +110,18 @@
         <div class="card back">
           <div>
             <p class="k">Research &amp; publications</p>
-            <h2>His work, in one place.</h2>
-            <p class="s">Scan to browse <span id="card-count">his</span> papers across strategy, leadership, HR, digital transformation, marketing and finance.</p>
+            <h2>All research<br>in one place.</h2>
+            <p class="s">Scan to browse his papers across strategy, leadership, HR, digital transformation, marketing and finance.</p>
             <p class="url" id="card-url">dr-iskander-sattar.vercel.app</p>
           </div>
-          <div class="qr"><img src="assets/qr.svg" alt="QR code linking to the research site"></div>
+          <div class="qr-col">
+            <div class="qr"><img src="assets/qr.svg" alt="QR code linking to the research site"></div>
+            <p class="studio">Nasaq Studio &middot; <span lang="ar">نسق استوديو</span></p>
+          </div>
         </div>
       </div>
     </div>
   </div>
-  <p class="credit">Card &amp; website design &copy; 2026 Nasaq Studio &middot; <span class="ar" lang="ar">نسق استوديو</span></p>
 
   <div class="howto">
     <h2>Printing it</h2>
@@ -137,8 +137,5 @@
 <script src="assets/data.js"></script>
 <script src="assets/abstracts.js"></script>
 <script src="assets/app.js"></script>
-<script>
-  document.getElementById("card-count").textContent = PAPERS.length;
-</script>
 </body>
 </html>
