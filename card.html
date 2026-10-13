@@ -1,0 +1,135 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Business Card — Dr. Iskander A. Sattar</title>
+<link rel="stylesheet" href="assets/style.css">
+<style>
+  /* Standard ID / business card: 85.6 × 54 mm (CR80) */
+  .sheet { display: flex; flex-wrap: wrap; gap: 36px; justify-content: center; padding: 40px 0 20px; }
+  .side { text-align: center; }
+  .side > p { font-size: 13px; letter-spacing: 1.2px; text-transform: uppercase; color: var(--ink-3); margin: 0 0 10px; }
+  .card {
+    width: 85.6mm; height: 54mm; position: relative; overflow: hidden;
+    border-radius: 3mm; text-align: left;
+    box-shadow: 0 1px 2px rgba(0,0,0,.08), 0 8px 24px rgba(29,39,51,.12);
+    -webkit-print-color-adjust: exact; print-color-adjust: exact;
+  }
+  .zoom { zoom: 1.4; }
+  @media (max-width: 760px) { .zoom { zoom: 1; } }
+
+  .front { background: #f8f5ee; color: var(--ink); padding: 5.5mm 6mm; }
+  .front .top { display: flex; align-items: center; gap: 2.6mm; }
+  .front .seal {
+    width: 8mm; height: 8mm; border: .35mm solid var(--ink); border-radius: 50%;
+    display: grid; place-items: center; font: 600 3mm/1 var(--serif);
+  }
+  .front .org { font-size: 2.15mm; line-height: 1.35; color: var(--ink-2); letter-spacing: .1mm; }
+  .front .org b { color: var(--ink); font-weight: 600; display: block; font-size: 2.35mm; }
+  .front .name { font: 600 4.5mm/1.15 var(--serif); margin: 6mm 0 1mm; padding-right: 3mm; letter-spacing: -.05mm; }
+  .front .ar { font-size: 3.6mm; color: var(--ink-2); margin: 0; text-align: left; }
+  .front .rule { width: 9mm; height: .5mm; background: var(--accent); margin: 2.6mm 0 2mm; }
+  .front .role { font: italic 2.9mm/1.3 var(--serif); margin: 0; }
+  .front .dept { font-size: 2.2mm; color: var(--ink-3); margin: .6mm 0 0; }
+  .front .corner { position: absolute; right: 0; top: 0; bottom: 0; width: 2.2mm; background: var(--navy); }
+
+  .back { background: var(--navy); color: #f5f1e8; padding: 6mm; display: grid; grid-template-columns: 1fr 27mm; gap: 5mm; align-items: center; }
+  .back .k { font-size: 2mm; letter-spacing: .5mm; text-transform: uppercase; color: #d9b8a4; margin: 0 0 2mm; }
+  .back h2 { font: 600 4.6mm/1.15 var(--serif); margin: 0 0 2.4mm; color: #fff; }
+  .back .s { font-size: 2.35mm; line-height: 1.45; color: #c9d1da; margin: 0; }
+  .back .url { font-size: 1.85mm; color: #9fb0c0; margin-top: 3.4mm; word-break: break-all; }
+  .back .qr { background: #fff; border-radius: 1.6mm; padding: 2mm; }
+  .back .qr img { display: block; width: 100%; height: auto; }
+
+  .howto { max-width: 680px; margin: 30px auto 70px; }
+  .howto h2 { font-size: 24px; margin-bottom: 10px; }
+  .howto ol { padding-left: 20px; color: var(--ink-2); }
+  .howto li { margin-bottom: 8px; }
+
+  @media print {
+    @page { size: A4; margin: 15mm; }
+    .howto, .page-head { display: none; }
+    .sheet { padding: 0; gap: 10mm; justify-content: flex-start; }
+    .side > p { display: none; }
+    .zoom { zoom: 1; }
+    .card { box-shadow: none; border-radius: 0; outline: .1mm dashed #bbb; }
+  }
+</style>
+</head>
+<body data-page="card">
+<header class="mast">
+  <div class="wrap">
+    <a class="brand" href="index.html">
+      <span class="mono">IS</span>
+      <span><span class="brand-name">Dr. Iskander A. Sattar</span><br><span class="brand-sub">Business Administration · UST Aden</span></span>
+    </a>
+    <button class="nav-toggle" type="button" aria-expanded="false" aria-controls="nav">Menu</button>
+    <nav class="nav" id="nav">
+      <a href="index.html">Home</a>
+      <a href="research.html">Research</a>
+      <a href="profile.html">Profile</a>
+    </nav>
+  </div>
+</header>
+
+<main class="wrap">
+  <div class="page-head" style="padding-bottom:0">
+    <p class="eyebrow">Print</p>
+    <h1>Business card</h1>
+    <p class="lede">Shown larger on screen. When printed it comes out at the standard card size, 85.6 &times; 54&nbsp;mm.</p>
+  </div>
+
+  <div class="sheet">
+    <div class="side">
+      <p>Front</p>
+      <div class="zoom">
+        <div class="card front">
+          <div class="top">
+            <span class="seal">IS</span>
+            <span class="org"><b>University of Science and Technology</b>Aden, Yemen</span>
+          </div>
+          <div class="name">Dr. Iskander Hasson A.&nbsp;Sattar</div>
+          <p class="ar" lang="ar" dir="rtl">د. إسكندر حسن عبدالستار</p>
+          <div class="rule"></div>
+          <p class="role">Associate Professor of Business Administration</p>
+          <p class="dept">Faculty of Administrative Sciences</p>
+          <span class="corner"></span>
+        </div>
+      </div>
+    </div>
+
+    <div class="side">
+      <p>Back</p>
+      <div class="zoom">
+        <div class="card back">
+          <div>
+            <p class="k">Research &amp; publications</p>
+            <h2>His work, in one place.</h2>
+            <p class="s">Scan to browse <span id="card-count">his</span> papers across strategy, leadership, HR, marketing and finance.</p>
+            <p class="url" id="card-url">yousefpowerpoint-glitch.github.io/Iskander</p>
+          </div>
+          <div class="qr"><img src="assets/qr.svg" alt="QR code linking to the research site"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="howto">
+    <h2>Printing it</h2>
+    <ol>
+      <li>Press <b>Ctrl&nbsp;+&nbsp;P</b> (or <b>&#8984;&nbsp;+&nbsp;P</b> on a Mac) and choose <b>Save as PDF</b>, or send it straight to a printer.</li>
+      <li>Set scale to <b>100%</b> (not &ldquo;Fit to page&rdquo;) and turn on <b>Background graphics</b>, otherwise the dark back side prints white.</li>
+      <li>For a print shop, hand them the PDF and ask for <b>CR80 cards, double-sided</b>, on 350&nbsp;gsm matte card.</li>
+      <li>Test the QR with your phone camera before printing a batch.</li>
+    </ol>
+  </div>
+</main>
+
+<script src="assets/data.js"></script>
+<script src="assets/app.js"></script>
+<script>
+  document.getElementById("card-count").textContent = PAPERS.length;
+</script>
+</body>
+</html>
