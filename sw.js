@@ -1,6 +1,6 @@
 // Keeps a copy of the whole site on the device so it opens without internet.
 // Bump VERSION whenever any site file changes.
-var VERSION = "v2";
+var VERSION = "v3";
 var CACHE = "iskander-" + VERSION;
 var FILES = [
   "./",
@@ -20,7 +20,8 @@ var FILES = [
   "assets/offline.js",
   "assets/qr.svg",
   "assets/icon-192.png",
-  "assets/icon.svg"
+  "assets/icon.svg",
+  "assets/fonts/plex-arabic-600.woff2"
 ];
 
 self.addEventListener("install", function (e) {

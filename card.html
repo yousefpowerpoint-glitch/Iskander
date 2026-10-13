@@ -6,6 +6,9 @@
 <title>Business Card — Dr. Iskander A. Sattar</title>
 <link rel="stylesheet" href="assets/style.css">
 <style>
+  /* IBM Plex Sans Arabic SemiBold (OFL), cut down to the letters used on the card */
+  @font-face { font-family: "Plex Arabic"; src: url("assets/fonts/plex-arabic-600.woff2") format("woff2"); font-weight: 600; font-display: swap; }
+
   /* Standard ID / business card: 85.6 × 54 mm (CR80) */
   .sheet { display: flex; flex-wrap: wrap; gap: 36px; justify-content: center; padding: 40px 0 20px; }
   .side { text-align: center; }
@@ -28,7 +31,7 @@
   .front .org { font-size: 2.15mm; line-height: 1.35; color: var(--ink-2); letter-spacing: .1mm; }
   .front .org b { color: var(--ink); font-weight: 600; display: block; font-size: 2.35mm; }
   .front .name { font: 600 4.5mm/1.15 var(--serif); margin: 6mm 0 1mm; padding-right: 3mm; letter-spacing: -.05mm; }
-  .front .ar { font-size: 3.6mm; color: var(--ink-2); margin: 0; text-align: left; }
+  .front .ar { font-family: "Plex Arabic", var(--arabic); font-weight: 600; font-size: 3.3mm; color: var(--ink-2); margin: .6mm 0 0; text-align: left; }
   .front .rule { width: 9mm; height: .5mm; background: var(--accent); margin: 2.6mm 0 2mm; }
   .front .role { font: italic 2.9mm/1.3 var(--serif); margin: 0; }
   .front .dept { font-size: 2.2mm; color: var(--ink-3); margin: .6mm 0 0; }
@@ -42,9 +45,10 @@
   .back .qr { background: #fff; border-radius: 1.6mm; padding: 2mm; }
   .back .qr img { display: block; width: 100%; height: auto; }
   .back .studio { margin: 1.8mm 0 0; text-align: center; font-size: 1.55mm; font-weight: 300; letter-spacing: .12mm; color: #8fa1b3; white-space: nowrap; }
+  .back .studio span { font-family: "Plex Arabic", var(--arabic); font-weight: 600; }
   .back .maker { margin: 1.4mm 0 0; padding-top: 1.3mm; border-top: .1mm solid rgba(201,209,218,.18); text-align: center; color: #c9d1da; line-height: 1.25; }
-  .back .maker small { display: block; font-size: 1.3mm; letter-spacing: .3mm; text-transform: uppercase; color: #8fa1b3; font-weight: 400; }
-  .back .maker span { display: block; font-family: var(--arabic); font-size: 2.05mm; margin-top: .4mm; text-align: center; }
+  .back .maker small { display: block; font-size: 1.25mm; letter-spacing: .14mm; text-transform: uppercase; color: #8fa1b3; font-weight: 400; }
+  .back .maker span { display: block; font-family: "Plex Arabic", var(--arabic); font-weight: 600; font-size: 2.05mm; margin-top: .4mm; text-align: center; }
 
   .howto { max-width: 680px; margin: 30px auto 70px; }
   .howto h2 { font-size: 24px; margin-bottom: 10px; }
@@ -120,7 +124,7 @@
           <div class="qr-col">
             <div class="qr"><img src="assets/qr.svg" alt="QR code linking to the research site"></div>
             <p class="studio">Nasaq Studio &middot; <span lang="ar">نسق استوديو</span></p>
-            <p class="maker"><small>Creative Director</small><span lang="ar" dir="rtl">يوسف ناصر حسين باعشن</span></p>
+            <p class="maker"><small>Founder &amp; Creative Director</small><span lang="ar" dir="rtl">يوسف ناصر حسين باعشن</span></p>
           </div>
         </div>
       </div>
