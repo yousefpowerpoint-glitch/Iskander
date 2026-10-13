@@ -8,7 +8,8 @@ Dr. Iskander Hasson A. Sattar, Associate Professor of Business Administration, U
 | `index.html` | Home: name, fields of work, recent papers |
 | `research.html` | All publications, with search and filters by field and year |
 | `paper.html?id=…` | One paper: details, citation, link to the publisher |
-| `profile.html` | Short profile, research interests, co-authors |
+| `profile.html` | Profile (from his ResearchGate page), education, co-authors |
+| `sources.html` | Every source used, per paper |
 | `card.html` | Printable business card (85.6 × 54 mm) with the QR code |
 | `print/card.pdf` | The card, ready for a print shop |
 

@@ -10,7 +10,7 @@
 
   // Any author string that is one of his name variants is shown in bold.
   function isHim(name) {
-    return /iskand[ae]r/i.test(name) && /sattar/i.test(name);
+    return /sattar/i.test(name) || /عبد ?الستار/.test(name);
   }
 
   function authorLine(p) {
@@ -32,7 +32,9 @@
   }
 
   function sorted() {
-    return PAPERS.slice().sort(function (a, b) { return (b.year || 0) - (a.year || 0); });
+    return PAPERS.slice().sort(function (a, b) {
+      return ((b.year || 0) * 100 + (b.month || 0)) - ((a.year || 0) * 100 + (a.month || 0));
+    });
   }
 
   function pubItem(p, showYear) {
@@ -40,11 +42,10 @@
     return '<li class="pub">' +
       '<div class="yr">' + (showYear ? (p.year || "—") : "") + "</div>" +
       "<div>" +
-      '<h3><a href="paper.html?id=' + encodeURIComponent(p.id) + '">' + esc(p.title) + "</a></h3>" +
+      "<h3" + (p.ar ? ' class="ar" dir="rtl" lang="ar"' : "") + '><a href="paper.html?id=' + encodeURIComponent(p.id) + '">' + esc(p.title) + "</a></h3>" +
       '<p class="by">' + authorLine(p) + "</p>" +
       (p.venue ? '<p class="where">' + venueLine(p) + "</p>" : "") +
       (area ? '<span class="tag">' + esc(area.name) + "</span>" : "") +
-      (p.type === "Working paper" ? '<span class="tag plain">Working paper</span>' : "") +
       (p.lang ? '<span class="tag plain">In ' + esc(p.lang) + "</span>" : "") +
       "</div></li>";
   }
@@ -152,7 +153,7 @@
       if (state.area !== "all" && p.area !== state.area) return false;
       if (state.year !== "all" && String(p.year || "undated") !== state.year) return false;
       if (state.q) {
-        var hay = [p.title, p.titleAr, p.venue, p.setting, p.note, p.authors.join(" ")].join(" ").toLowerCase();
+        var hay = [p.title, p.titleAr, p.titleEn, p.venue, p.abstract, p.authors.join(" ")].join(" ").toLowerCase();
         return state.q.split(/\s+/).every(function (w) { return hay.indexOf(w) !== -1; });
       }
       return true;
@@ -222,8 +223,8 @@
       ["Published in", p.venue],
       ["Volume / issue", p.volume ? p.volume + (p.issue ? " (" + p.issue + ")" : "") : (p.issue ? p.issue : "")],
       ["Pages", p.pages],
-      ["Date", p.date || p.year],
-      ["Setting", p.setting],
+      ["Date", p.date || (p.rgDate ? "" : p.year)],
+      ["Date on ResearchGate", p.rgDate],
       ["Field", area && area.name],
       ["Type", p.type],
       ["Language", p.lang || "English"],
@@ -232,23 +233,33 @@
 
     var related = list.filter(function (q) { return q.area === p.area && q.id !== p.id; }).slice(0, 4);
     var prev = list[i - 1], next = list[i + 1];
+    var main = p.sources.filter(function (s) { return s.url !== RG && s.url.indexOf("researchgate") === -1; })[0] || p.sources[0];
 
     root.innerHTML =
       '<p class="crumbs"><a href="research.html">Research</a> / ' +
       '<a href="research.html#area=' + p.area + '">' + esc(area ? area.name : "") + "</a></p>" +
       '<div class="paper"><article>' +
       '<p class="eyebrow">' + esc(p.type) + (p.year ? " &middot; " + p.year : "") + "</p>" +
-      "<h1>" + esc(p.title) + "</h1>" +
-      (p.titleAr ? '<p class="ar ar-title">' + esc(p.titleAr) + "</p>" : "") +
+      "<h1" + (p.ar ? ' class="ar" dir="rtl" lang="ar"' : "") + ">" + esc(p.title) + "</h1>" +
+      (p.titleAr ? '<p class="ar ar-title" dir="rtl" lang="ar">' + esc(p.titleAr) + "</p>" : "") +
+      (p.titleEn ? '<p class="en-title">' + esc(p.titleEn) + "</p>" : "") +
       '<p class="authors">' + authorLine(p) + "</p>" +
-      (p.note ? '<p class="note">' + esc(p.note) + "</p>" : "") +
+      (p.abstract ? "<h2>Abstract</h2>" +
+        '<blockquote class="abstract' + (p.abstractAr ? ' ar" dir="rtl" lang="ar' : "") + '">' + esc(p.abstract) + "</blockquote>" +
+        '<p class="src-note">Abstract excerpt quoted as it appears on ResearchGate.</p>' : "") +
       "<h2>Cite this paper</h2>" +
       '<div class="cite" id="cite">' + apa(p) + "</div>" +
       '<div class="actions" style="margin-top:14px">' +
       '<button class="btn" type="button" id="copy">Copy citation</button>' +
-      (p.url ? '<a class="btn solid" href="' + esc(p.url) + '" target="_blank" rel="noopener">Read at the publisher <span class="arr">&rarr;</span></a>' : "") +
+      (main ? '<a class="btn solid" href="' + esc(main.url) + '" target="_blank" rel="noopener">' + (main.url === RG ? "View on ResearchGate" : "Read at the publisher") + ' <span class="arr">&rarr;</span></a>' : "") +
       "</div>" +
-      (p.url ? '<p class="muted" style="font-size:13.5px;margin-top:10px">The full text opens on the journal\'s site and needs an internet connection.</p>' : "") +
+      "<h2 style=\"margin-top:40px\">Sources</h2>" +
+      '<ol class="sources">' + p.sources.map(function (s) {
+        return '<li><a href="' + esc(s.url) + '" target="_blank" rel="noopener">' + esc(s.label) + "</a></li>";
+      }).join("") + "</ol>" +
+      (p.rgNote ? '<p class="src-note">' + esc(p.rgNote) + "</p>" : "") +
+      (p.notOnRG ? '<p class="src-note">Not in the ResearchGate publication list; taken from the journal\'s own page.</p>' : "") +
+      '<p class="src-note">Links open online and need an internet connection.</p>' +
       (related.length ? '<h2 style="margin-top:48px">More in ' + esc(area.name) + '</h2><ul class="pubs">' +
         related.map(function (q) { return pubItem(q, true); }).join("") + "</ul>" : "") +
       '<nav class="pager">' +
@@ -278,6 +289,19 @@
     });
   }
 
+  /* ---------- sources ---------- */
+
+  function sources() {
+    var list = sorted();
+    $("#n-rg").textContent = PROFILE.rgCount;
+    $("#src-list").innerHTML = list.map(function (p) {
+      return '<li><a class="t' + (p.ar ? ' ar" dir="rtl" lang="ar' : "") + '" href="paper.html?id=' + encodeURIComponent(p.id) + '">' + esc(p.title) + "</a>" +
+        "<ul>" + p.sources.map(function (s) {
+          return '<li><a href="' + esc(s.url) + '" target="_blank" rel="noopener">' + esc(s.label) + "</a></li>";
+        }).join("") + "</ul></li>";
+    }).join("");
+  }
+
   /* ---------- profile ---------- */
 
   function profile() {
@@ -300,5 +324,6 @@
     if (page === "research") research();
     if (page === "paper") paper();
     if (page === "profile") profile();
+    if (page === "sources") sources();
   });
 })();
