@@ -18,7 +18,7 @@ var FILES = [
   "assets/offline.js",
   "assets/qr.svg",
   "assets/icon-192.png",
-  "assets/icon-512.png"
+  "assets/icon.svg"
 ];
 
 self.addEventListener("install", function (e) {
