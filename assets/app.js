@@ -59,8 +59,8 @@
     var list = p.sources.slice(), f = full(p);
     var have = function (u) { return list.some(function (s) { return s.url === u; }); };
     if (f) {
-      if (f.src && !have(f.src)) list.push({ label: hostLabel(f.src) + " \u2014 article page (abstract source)", url: f.src });
-      if (f.pdf && !have(f.pdf)) list.push({ label: hostLabel(f.pdf) + " \u2014 full text (PDF)", url: f.pdf });
+      if (f.src && !have(f.src)) list.push({ label: hostLabel(f.src) + " — article page (abstract source)", url: f.src });
+      if (f.pdf && !have(f.pdf)) list.push({ label: hostLabel(f.pdf) + " — full text (PDF)", url: f.pdf });
       if (f.doi && !p.doi) list.push({ label: "DOI " + f.doi, url: "https://doi.org/" + f.doi });
     }
     return list;
@@ -290,11 +290,11 @@
       '<p class="authors">' + authorLine(p) + "</p>" +
       (F ? F.ab.map(function (a) {
           var ar = a[0] === "ar";
-          return "<h2" + (ar ? ' class="ar" dir="rtl" lang="ar" style="text-align:right;letter-spacing:0"' : "") + ">" + (ar ? "\u0627\u0644\u0645\u0644\u062e\u0635" : "Abstract") + "</h2>" +
+          return "<h2" + (ar ? ' class="ar" dir="rtl" lang="ar" style="text-align:right;letter-spacing:0"' : "") + ">" + (ar ? "الملخص" : "Abstract") + "</h2>" +
             '<div class="abstract full' + (ar ? ' ar" dir="rtl" lang="ar' : "") + '">' +
             esc(a[1]).split(/\n+/).map(function (para) { return "<p>" + para + "</p>"; }).join("") + "</div>";
         }).join("") +
-        (F.kw && F.kw.length ? '<p class="kw"><b>Keywords:</b> ' + F.kw.map(esc).join(" \u00b7 ") + "</p>" : "") +
+        (F.kw && F.kw.length ? '<p class="kw"><b>Keywords:</b> ' + F.kw.map(esc).join(" · ") + "</p>" : "") +
         '<p class="src-note">Abstract and keywords reproduced exactly as published on the journal\'s article page: <a href="' + esc(F.src) + '" target="_blank" rel="noopener">' + esc(hostLabel(F.src)) + "</a>.</p>"
       : p.abstract ? "<h2>Abstract</h2>" +
         '<blockquote class="abstract' + (p.abstractAr ? ' ar" dir="rtl" lang="ar' : "") + '">' + esc(p.abstract) + "</blockquote>" +
