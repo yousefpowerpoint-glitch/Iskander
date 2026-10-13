@@ -10,7 +10,7 @@ import sys
 
 import segno
 
-url = sys.argv[1] if len(sys.argv) > 1 else "https://yousefpowerpoint-glitch.github.io/Iskander/"
+url = sys.argv[1] if len(sys.argv) > 1 else "https://dr-iskander-sattar.vercel.app/"
 out = pathlib.Path(__file__).resolve().parent.parent / "assets" / "qr.svg"
 segno.make(url, error="q").save(str(out), kind="svg", scale=1, border=0, dark="#1d2733", xmldecl=False, svgns=True)
 # give it a viewBox so it scales cleanly to any print size

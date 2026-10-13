@@ -15,10 +15,8 @@ Dr. Iskander Hasson A. Sattar, Associate Professor of Business Administration, U
 ## Adding a paper
 Open `assets/data.js`, copy one block in `PAPERS`, and fill it in. The counts, filters and pages update themselves.
 
-## Putting it online (for the QR code)
-1. Merge this branch into `main`.
-2. On GitHub: **Settings → Pages → Source: Deploy from a branch → `main` / root**.
-3. The site appears at `https://yousefpowerpoint-glitch.github.io/Iskander/` — the address the QR already points to.
+## Online address (the QR points here)
+https://dr-iskander-sattar.vercel.app/ — hosted on Vercel (project `dr-iskander-sattar`).
 
 If the address changes: `pip install segno && python tools/make_qr.py <new-url>`, then reprint the card.
 
