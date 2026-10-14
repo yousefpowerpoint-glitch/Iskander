@@ -1,6 +1,6 @@
 // Keeps a copy of the whole site on the device so it opens without internet.
 // Bump VERSION whenever any site file changes.
-var VERSION = "v3";
+var VERSION = "v4";
 var CACHE = "iskander-" + VERSION;
 var FILES = [
   "./",
@@ -21,6 +21,7 @@ var FILES = [
   "assets/qr.svg",
   "assets/icon-192.png",
   "assets/icon.svg",
+  "assets/dr-iskander.webp",
   "assets/fonts/plex-arabic-600.woff2"
 ];
 
