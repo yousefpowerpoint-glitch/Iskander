@@ -47,3 +47,7 @@
   .profile-head { grid-template-columns: 1fr; gap: 24px; }
   .profile-head .portrait { width: 132px; }
 }
+
+/* studio credit link */
+.foot .gift a { color: inherit; text-decoration: underline; text-decoration-color: var(--accent); text-underline-offset: 3px; }
+.foot .gift a:hover { color: var(--ink); }
