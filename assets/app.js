@@ -150,22 +150,6 @@
     });
   }
 
-  // A small note that only appears around his birthday (15 October).
-  function birthday() {
-    var d = new Date();
-    if (d.getMonth() !== 9 || d.getDate() < 13 || d.getDate() > 22) return;
-    try { if (sessionStorage.getItem("ribbon-closed")) return; } catch (e) {}
-    var r = document.createElement("div");
-    r.className = "ribbon";
-    r.innerHTML = "<b>Happy birthday, Dr. Iskander.</b> With gratitude from your students. " +
-      '<button type="button" aria-label="Close">&times;</button>';
-    r.querySelector("button").addEventListener("click", function () {
-      r.remove();
-      try { sessionStorage.setItem("ribbon-closed", "1"); } catch (e) {}
-    });
-    document.body.insertBefore(r, document.body.firstChild);
-  }
-
   function year() {
     var y = $("#year");
     if (y) y.textContent = new Date().getFullYear();
@@ -431,7 +415,7 @@
   }
 
   document.addEventListener("DOMContentLoaded", function () {
-    nav(); langSwitch(); birthday(); year();
+    nav(); langSwitch(); year();
     var page = document.body.getAttribute("data-page");
     if (page === "home") home();
     if (page === "research") research();
