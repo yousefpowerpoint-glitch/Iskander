@@ -1,0 +1,34 @@
+name: fetch-aden-site
+on:
+  push:
+    branches: [claude/dr-iskander-research-site-ziozg7]
+    paths: [.github/workflows/fetch-aden-site.yml]
+permissions:
+  contents: write
+jobs:
+  fetch:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Download the site's static files
+        run: |
+          set -e
+          B=https://harvard-aden-demo.vercel.app
+          D=aden-reel/assets/site
+          mkdir -p $D/assets/fonts
+          for f in index.html styles.css app.js fonts.css \
+                   assets/class-1.jpg assets/class-2.jpg assets/favicon.png \
+                   assets/logo-full.jpg assets/logo-mark.jpg \
+                   assets/fonts/almarai-400-arabic.woff2 assets/fonts/almarai-400-latin.woff2 \
+                   assets/fonts/almarai-700-arabic.woff2 assets/fonts/almarai-700-latin.woff2 \
+                   assets/fonts/almarai-800-arabic.woff2 assets/fonts/almarai-800-latin.woff2; do
+            curl -fsSL "$B/$f" -o "$D/$f"
+          done
+          ls -laR $D
+      - name: Commit
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add aden-reel/assets/site
+          git commit -m "aden-reel: snapshot of the site's static files"
+          git push
